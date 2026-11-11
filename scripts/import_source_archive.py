@@ -64,10 +64,10 @@ def main():
         path=repo/name
         path.parent.mkdir(parents=True,exist_ok=True)
         path.write_bytes(raw)
-    (repo/"docs"/"UPLOAD_STATUS.md").write_text("# Source upload\n\nArchive imported and pushed; Android build and device verification are still pending.\n",encoding="utf-8")
+    (repo/"docs"/"UPLOAD_STATUS.md").write_text("# Source upload\n\nv1.9.19 archive re-imported and pushed; Android build and device verification are still pending.\nThis file is a placeholder written by the importer; see docs/GITHUB_IMPORT.md and restore the maintained status text after re-import.\n",encoding="utf-8")
     git(repo,"add","--all")
     if git(repo,"diff","--cached","--name-only"):
-        git(repo,"commit","-m","feat: import complete StoryWeave v1.9.17 source")
+        git(repo,"commit","-m","feat: import complete StoryWeave v1.9.19 source")
         git(repo,"push","origin","main")
     print("Finished. Verify GitHub repository and build separately.")
     return 0
