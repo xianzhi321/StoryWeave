@@ -1,0 +1,46 @@
+# Android / Gradle
+.gradle/
+**/build/
+local.properties
+.idea/
+*.iml
+.cxx/
+.externalNativeBuild/
+captures/
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+*.hprof
+
+# Secrets, credentials and signing keys
+.env
+.env.*
+!.env.example
+*.jks
+*.keystore
+*.p12
+*.p8
+*.pem
+*.key
+google-services.json
+id_rsa*
+credentials.json
+secrets.properties
+*.secrets
+*.token
+
+# Temporary files and test artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+node_modules/
+dist/
+coverage/
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.swp
+*.bak
