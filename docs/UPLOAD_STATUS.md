@@ -1,9 +1,10 @@
 # 源码上传状态
 
 - 目标仓库：`xianzhi321/StoryWeave`（公开）
-- 目标基线：`StoryWeave-Source-v1.9.17-native-tablet-audit.zip`
-- 当前状态：**尚未完成源码上传；仅项目文档与安全规则已经初始化**
-- 已完成：压缩包文件清单核对，发现 866 项；敏感密钥/私钥常见格式检查无命中
-- 传输限制：当前 ChatGPT GitHub 连接器支持按文本创建文件及 Git blob，但不能直接读取本地沙盒 ZIP 作为源代码上传，无法将本地 31 MB ZIP 直接提交
-- 安全策略：不把压缩包字节或无效 Git LFS 指针伪装为源码，不强推、不创建无效构建发布
-- 下一步：在支持 Git 网络推送的本地或自动化环境中，解压、检查、提交全部代码与第三方许可证，再配置构建流程
+- 基线：`StoryWeave-Source-v1.9.17-native-tablet-audit.zip`
+- 当前状态：**部分上传，不可构建**；尚未上传全部 866 项源码和第三方离线资源。
+- 已上传：根目录项目说明、Git 忽略规则、原生仓库 `NativeStoryRepository.java`、Android Gradle 配置、Manifest、网络安全 XML、问题审计报告。
+- 暂缺：`NativeTabletActivity.java`、`MainActivity.java`、大部分 Web/Android 资源、测试与完整第三方许可证清单。
+- 传输限制：当前 ChatGPT GitHub 连接器不支持直接读取本地 ZIP 或将沙盒文件作为 Git blob 上传。不得标记为完整源码。
+- 安全说明：已排除常见签名密钥和个人敏感文件路径，但源码公开发布前仍需完整审查。
+- 下一步：在具备 Git 网络访问且有授权的环境中，从源 ZIP 解压并上传余下内容；完成后运行 Android 编译、核心测试及真机数据恢复测试。
