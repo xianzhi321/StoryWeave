@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 464">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#482e36"/><stop offset=".55" stop-color="#a25f49"/><stop offset="1" stop-color="#362631"/></linearGradient>
+    <pattern id="stitch" width="22" height="22" patternUnits="userSpaceOnUse"><path d="M0 22 22 0m-6 28 12-12M-6 6 6-6" stroke="#d9a981" opacity=".2" stroke-width=".6"/></pattern>
+  </defs>
+  <path fill="url(#sky)" d="M0 0h360v464H0z"/>
+  <circle cx="184" cy="154" r="62" fill="#d49a6a"/>
+  <path fill="#6b4540" d="m0 232 54-51 27 13 24-28 45 32 30 9 47-14 24-32 43 26 32-22 34 27v114H0Z"/>
+  <path fill="#402e37" d="M0 266h39v-58h25v-28h15v28h25v58h20v-17h24v-23h72v23h22v17h25v-47h25v-22h16v22h26v47h26v88H0Z"/>
+  <path fill="url(#stitch)" d="M0 266h39v-58h65v58h20v-17h24v-23h72v23h22v17h25v-47h67v47h26v88H0Z"/>
+  <path fill="#c18360" d="M170 318v-33a15 15 0 0 1 30 0v33Z"/>
+  <path d="M0 332q77-14 147-10l37-9 28 10q77-1 148 14v127H0Z" fill="#352833"/>
+  <path d="m182 319-54 26m61-25 46 25M14 295h109m115 0h111m-327 9h94m130 0h99" stroke="#c38c69" opacity=".55" fill="none"/>
+  <path d="M24 28v52m7-52v28" stroke="#e0b993" opacity=".7"/>
+</svg>

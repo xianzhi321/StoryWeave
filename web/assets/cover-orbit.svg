@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 464">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#101e37"/><stop offset="1" stop-color="#3c4860"/></linearGradient>
+    <linearGradient id="planet" x1="0" y1="0" x2="0.85" y2="1"><stop stop-color="#bdc9bf"/><stop offset=".51" stop-color="#627d8b"/><stop offset="1" stop-color="#253c53"/></linearGradient>
+    <clipPath id="disc"><circle cx="193" cy="179" r="78"/></clipPath>
+  </defs>
+  <path fill="url(#sky)" d="M0 0h360v464H0z"/>
+  <g fill="#e6d4a9"><circle cx="65" cy="105" r="1.5"/><circle cx="298" cy="64" r="2"/><circle cx="85" cy="60" r="1"/><circle cx="310" cy="167" r="1.5"/><circle cx="54" cy="235" r="1"/><circle cx="291" cy="293" r="1"/><circle cx="112" cy="287" r="1.6"/><path d="M98 113v18m-9-9h18m166-16v14m-7-7h14" fill="none" stroke="#e6d4a9"/></g>
+  <g fill="none" stroke="#c5ab7b" opacity=".33" stroke-dasharray="2 5"><circle cx="193" cy="179" r="108"/><circle cx="193" cy="179" r="126"/></g>
+  <ellipse cx="192" cy="181" rx="145" ry="36" transform="rotate(-27 192 181)" fill="none" stroke="#bfa77d" stroke-width="2"/>
+  <circle cx="193" cy="179" r="78" fill="url(#planet)"/>
+  <g clip-path="url(#disc)" fill="none" stroke="#d3d1ac" opacity=".38"><path d="M103 159q80-32 174-15m-181 29q93-33 191-14m-192 35q86-30 191-14m-186 38q104-31 183-21m-168 40q90-30 165-20" stroke-width="2"/></g>
+  <path d="M63 247c12 18 76 3 149-34s123-80 113-98" fill="none" stroke="#e4cd9d" stroke-width="2"/>
+  <circle cx="93" cy="228" r="6" fill="#ddbb86"/>
+  <path d="M24 28v52m7-52v28" stroke="#bca985" opacity=".7"/>
+</svg>

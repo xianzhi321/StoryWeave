@@ -1,0 +1,178 @@
+/* StoryWeave v1.9.11 · fluid surfaces & restrained motion.
+ * Keep input/textarea, editor caret, manuscript and map canvas free of animations.
+ * All movement uses transform/opacity and honors OS reduced-motion preference.
+ */
+:root {
+  --swm-bg: #f7f5ef;
+  --swm-panel: #fffdf8;
+  --swm-ink: #303d34;
+  --swm-muted: #727b70;
+  --swm-accent: #3f6754;
+  --swm-accent-soft: #edf3ea;
+  --swm-line: #e4e3d9;
+  --swm-ease: cubic-bezier(.22,1,.36,1);
+  --swm-quick: 140ms;
+  --swm-normal: 230ms;
+}
+body:not(.focus-mode) { background: var(--swm-bg); }
+#app { background: var(--swm-bg); }
+#topbar {
+  background: #f7f5ef;
+  border-bottom: 1px solid rgba(80,96,81,.09);
+  box-shadow: 0 2px 15px rgba(45,57,45,.035);
+  /* Scrolling should not continuously trigger expensive frosted-glass composition. */
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.sw16-book-context strong { color: var(--swm-ink); letter-spacing: .025em; }
+#sw16-back {
+  border-radius: 12px;
+  border-color: var(--swm-line);
+  color: var(--swm-accent);
+  background: #fefdf8;
+}
+#bottomNav {
+  background: #fbfaf5;
+  border-bottom: 1px solid var(--swm-line);
+  box-shadow: 0 5px 15px rgba(46,62,47,.025);
+}
+#bottomNav .nav-item {
+  color: #7c847b;
+  transition: color var(--swm-normal) ease, background-color var(--swm-quick) ease;
+}
+#bottomNav .nav-item::after {
+  content: '';
+  position: absolute;
+  left: calc(50% - 17px);
+  right: calc(50% - 17px);
+  bottom: -1px;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: var(--swm-accent);
+  transform: scaleX(0);
+  opacity: 0;
+  transition: transform 250ms var(--swm-ease), opacity 180ms ease;
+  pointer-events: none;
+}
+#bottomNav .nav-item[aria-current="page"] {
+  background: transparent;
+  color: var(--swm-accent);
+  box-shadow: none;
+}
+#bottomNav .nav-item[aria-current="page"]::after { transform: scaleX(1); opacity: 1; }
+#bottomNav .nav-item svg { transition: transform var(--swm-normal) var(--swm-ease); }
+#bottomNav .nav-item[aria-current="page"] svg { transform: translateY(-1px); }
+
+/* Shelf: typography and quiet depth, without extra artwork or overlays. */
+.sw37-shelf-heading h1,.sw16-directory-heading h1 { color: var(--swm-ink); letter-spacing: .025em; }
+.books { gap: clamp(10px,3.2vw,17px); }
+.sw18-card-wrap .book-card,.book-card {
+  border-radius: 16px;
+  border-color: var(--swm-line);
+  background: var(--swm-panel);
+  box-shadow: 0 4px 15px rgba(49,57,48,.045);
+  transition: transform var(--swm-normal) var(--swm-ease), box-shadow var(--swm-normal) ease, border-color var(--swm-quick) ease;
+}
+.book-cover { border-radius: 10px; }
+.book-name { color: var(--swm-ink); }
+.book-info { color: var(--swm-muted); }
+#sw37-resume,.sw16-continue {
+  border-radius: 14px;
+  border-color: #d8e3d6;
+  background: var(--swm-accent-soft);
+  transition: border-color var(--swm-quick) ease, background-color var(--swm-quick) ease, transform var(--swm-quick) var(--swm-ease);
+}
+.sw18-more,.icon-button,.button,.sw14-editor-bar button,.sw14-editor-bar .sw15-ai-entry,
+.sw15-tool-sheet button,.sw18-menu-grid button,.sw16-chapter-link,.sw19-jump-row,
+.sw14-project-nav summary,.sw16-directory-tools summary,.sw19-directory-search summary {
+  transition: transform var(--swm-quick) var(--swm-ease), background-color var(--swm-normal) ease, border-color var(--swm-normal) ease, color var(--swm-normal) ease, box-shadow var(--swm-normal) ease;
+}
+.button.primary { background: var(--swm-accent); }
+.button.outline { border-color: #dcded4; }
+.sw18-menu-grid button { border-radius: 13px; }
+.sw18-menu-grid button span { border-radius: 11px; }
+
+/* Chapter directory and editor retain their established structure. */
+.sw16-chapter-row { border-top-color: var(--swm-line); }
+.sw16-chapter-link { border-radius: 9px; }
+.sw16-chapter-link[aria-current="true"] {
+  background: var(--swm-accent-soft);
+  box-shadow: inset 3px 0 var(--swm-accent);
+}
+.sw16-directory-tools,.sw19-directory-search { border-radius: 12px; }
+.editor-shell { border-radius: 17px; border-color: var(--swm-line); }
+body:not(.focus-mode):not([data-sw16-paper="ink"]) .editor-shell {
+  box-shadow: 0 7px 24px rgba(41,53,40,.055);
+}
+body:not(.focus-mode):not([data-sw16-paper="ink"]) .editor-banner {
+  background: linear-gradient(110deg,#f2f2e9,#fbf9f2 88%);
+}
+body[data-sw16-paper="ink"][data-sw16-view="write"]:not(.focus-mode) #topbar {
+  background: var(--sw16-panel);
+  border-color: var(--sw16-edge);
+  box-shadow: none;
+}
+body.focus-mode .editor-shell { box-shadow: none; }
+body.focus-mode #screen { animation: none !important; }
+
+/* Dialogs and drawers: a single short entrance, no blur on the backdrop. */
+.modal-backdrop { background: rgba(19,29,23,.46); backdrop-filter: none; -webkit-backdrop-filter: none; animation: swm-backdrop-in 180ms ease-out both; }
+.modal { box-shadow: 0 -12px 42px rgba(15,32,21,.18); animation: swm-sheet-in 240ms var(--swm-ease) both; }
+.modal-close { min-width: 40px; min-height: 40px; border-radius: 12px; }
+.sw7-drawer-mask { backdrop-filter: none; -webkit-backdrop-filter: none; }
+.sw7-reference-drawer { animation: swm-sheet-in 240ms var(--swm-ease) both; }
+.toast { animation: swm-toast-in 210ms var(--swm-ease) both; }
+
+/* Small action affordances. Hover only where the device truly supports hover. */
+@media (hover: hover) and (pointer: fine) {
+  .sw18-card-wrap .book-card:hover,.book-card:hover {
+    transform: translateY(-3px);
+    border-color: #cddbcf;
+    box-shadow: 0 12px 25px rgba(44,71,51,.1);
+  }
+  #sw37-resume:hover,.sw16-continue:hover { background: #e6efe2; border-color: #bed3be; }
+  :is(.button,.icon-button,.sw18-more,.sw15-tool-sheet button,.sw18-menu-grid button):not(:disabled):hover {
+    border-color: #aebeaa;
+  }
+  .sw16-chapter-link:hover,.sw19-jump-row:hover { background: #f2f5ec; }
+}
+@media (pointer: coarse) {
+  :is(.book-card,.button,.icon-button,.sw18-more,#sw37-resume,.sw16-continue,.sw18-menu-grid button):not(:disabled):active { transform: scale(.985); }
+}
+:where(button,summary,[role="button"]):focus-visible {
+  outline: 2px solid var(--swm-accent);
+  outline-offset: 3px;
+}
+
+/* Real navigation changes only: the controller never animates manuscript keystrokes. */
+#screen.swm-view-enter { animation: swm-page-in 290ms var(--swm-ease) both; }
+body[data-sw16-view="write"] #screen.swm-view-enter { animation-name: swm-editor-in; animation-duration: 170ms; }
+#screen.swm-view-enter .sw18-card-wrap { animation: swm-card-in 290ms var(--swm-ease) both; }
+#screen.swm-view-enter .sw18-card-wrap:nth-child(2) { animation-delay: 30ms; }
+#screen.swm-view-enter .sw18-card-wrap:nth-child(3) { animation-delay: 60ms; }
+#screen.swm-view-enter .sw18-card-wrap:nth-child(4) { animation-delay: 90ms; }
+#screen.swm-view-enter .sw18-card-wrap:nth-child(n+5) { animation-delay: 105ms; }
+/* Never animate maps or charts as part of a screen transition. */
+@keyframes swm-page-in { from { opacity: .5; transform: translate3d(0,7px,0); } to { opacity: 1; transform: translate3d(0,0,0); } }
+@keyframes swm-editor-in { from { opacity: .76; } to { opacity: 1; } }
+@keyframes swm-card-in { from { opacity: .55; transform: translate3d(0,5px,0); } to { opacity: 1; transform: translate3d(0,0,0); } }
+@keyframes swm-sheet-in { from { opacity: .82; transform: translate3d(0,16px,0); } to { opacity: 1; transform: translate3d(0,0,0); } }
+@keyframes swm-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes swm-toast-in { from { opacity: 0; transform: translate3d(-50%,9px,0); } to { opacity: 1; transform: translate3d(-50%,0,0); } }
+
+/* Avoid cramped controls on very narrow Android handsets. */
+@media (max-width: 360px) {
+  #topbar { padding-inline: 11px; }
+  #bottomNav { padding-inline: 5px; }
+  .books { gap: 9px; }
+  .book-card { padding: 8px; }
+  .sw16-book-context { gap: 7px; }
+  .sw16-book-context strong { font-size: 15px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #screen.swm-view-enter,.modal-backdrop,.modal,.sw7-reference-drawer,.toast,
+  #screen.swm-view-enter .sw18-card-wrap { animation: none !important; }
+  :is(.book-card,.button,.icon-button,.sw18-more,#sw37-resume,.sw16-continue,
+  .sw16-chapter-link,.sw19-jump-row,.sw18-menu-grid button,#bottomNav .nav-item,
+  #bottomNav .nav-item svg,#bottomNav .nav-item::after) { transition: none !important; }
+}

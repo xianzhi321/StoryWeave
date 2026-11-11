@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 464">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#3e5646"/><stop offset=".6" stop-color="#526a50"/><stop offset="1" stop-color="#233a35"/></linearGradient>
+    <g id="needle" fill="none" stroke-linecap="round"><path d="M0 0q37-10 73-38M12-3l13-21m0 17 17-31M41-17l12-27m0 22 9-22M18-5l24 4m-11-10 24 2m-9-10 22 1m-9-10h17"/></g>
+  </defs>
+  <path fill="url(#sky)" d="M0 0h360v464H0z"/>
+  <path d="M228 92a61 61 0 1 0 48 96 55 55 0 0 1-48-96Z" fill="#d6c08d"/>
+  <path d="M0 355c86-30 110-78 121-135 6-31 14-59 35-81 20-22 35-33 56-37-34 19-54 50-58 96-5 63-24 103-67 157Z" fill="#233a32"/>
+  <path d="M132 234c26-39 82-60 127-49-54 2-91 26-119 64M128 200c-21-45-60-73-114-67 42 3 74 22 106 84M105 270c-26-30-61-38-95-34 38 5 65 23 84 46" fill="#233a32"/>
+  <g stroke="#a3ae87" stroke-width="1.8" opacity=".7">
+    <use href="#needle" transform="translate(179 121) rotate(-20)"/><use href="#needle" transform="translate(169 138) rotate(-69)"/>
+    <use href="#needle" transform="translate(222 187) rotate(12)"/><use href="#needle" transform="translate(191 196) rotate(-40)"/>
+    <use href="#needle" transform="translate(82 147) rotate(206)"/><use href="#needle" transform="translate(94 160) rotate(262)"/>
+    <use href="#needle" transform="translate(71 251) rotate(207)"/><use href="#needle" transform="translate(57 245) rotate(174)"/>
+  </g>
+  <path d="M137 224q-15 82-73 124m68-97q-11 59-52 105" stroke="#7c8b67" opacity=".55" fill="none"/>
+  <path d="M24 28v52m7-52v28" stroke="#e0c793" opacity=".7"/>
+</svg>

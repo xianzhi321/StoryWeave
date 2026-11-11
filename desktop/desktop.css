@@ -1,0 +1,9 @@
+@media (min-width: 850px) {
+  body:not(.focus-mode) #app { max-width: 1120px; }
+  body[data-sw16-view="write"]:not(.focus-mode) #screen {
+    max-width: 920px;
+    margin-inline: auto;
+  }
+  body[data-sw16-view="home"] .books { grid-template-columns: repeat(auto-fill,minmax(170px,1fr)); }
+  body[data-sw16-view="home"][data-sw17-shelf="list"] .books { grid-template-columns: minmax(0,1fr); }
+}

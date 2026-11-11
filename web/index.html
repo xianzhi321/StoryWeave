@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"/>
+  <meta name="theme-color" content="#f6f5f0"/><meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <title>叙境 · StoryWeave 1.9.19</title>
+  <link rel="manifest" href="manifest.webmanifest"/><link rel="icon" href="assets/icon.svg" type="image/svg+xml"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="vendor/leaflet/leaflet.css"/>
+  <link rel="stylesheet" href="atlas.css"/>
+  <link rel="stylesheet" href="writing-studio.css"/>
+  <link rel="stylesheet" href="preferences.css"/>
+  <link rel="stylesheet" href="book-actions.css"/>
+  <link rel="stylesheet" href="writing-sense.css"/>
+  <link rel="stylesheet" href="ui-fluid.css"/>
+  <link rel="stylesheet" href="ui-atelier.css"/>
+  <link rel="stylesheet" href="ui-performance.css"/>
+  <link rel="stylesheet" href="ui-manuscript.css"/>
+  <link rel="stylesheet" href="ui-system.css"/>
+</head>
+<body>
+  <div id="app">
+    <header class="topbar" id="topbar">
+      <div class="brand"><span class="brand-mark" aria-hidden="true"></span><span>叙境<small>STORYWEAVE</small></span></div>
+      <div class="sw16-book-context" hidden>
+        <button type="button" id="sw16-back" data-action="v16-back"></button>
+        <strong id="sw16-book-title"></strong>
+      </div>
+      <div class="sw-shelf-nav">
+        <button type="button" class="icon-button quiet" id="shelfSearchBtn" aria-label="查找作品" aria-controls="shelf-filters" aria-expanded="false" hidden><span data-icon="search"></span></button>
+        <button type="button" class="icon-button quiet" data-action="shelf-menu" aria-label="书架更多" aria-haspopup="dialog"><span data-icon="more"></span></button>
+      </div>
+    </header>
+    <nav class="bottom-nav" aria-label="作品导航" id="bottomNav" hidden>
+      <button data-tab="contents" class="nav-item"><span data-icon="book"></span><span>目录</span></button>
+      <button data-tab="characters" class="nav-item"><span data-icon="users"></span><span>人物</span></button>
+      <button data-tab="world" class="nav-item"><span data-icon="globe"></span><span>世界</span></button>
+    </nav>
+    <main id="screen" class="screen" aria-live="polite"></main>
+    <div id="modalRoot"></div><div id="toastRoot"></div>
+    <input id="manuscriptImport" type="file" accept=".txt,.md,.markdown,.epub,text/plain,text/markdown,application/epub+zip" hidden/>
+    <input id="bookImport" type="file" accept=".txt,.md,.markdown,.epub,text/plain,text/markdown,application/epub+zip" hidden/>
+    <input id="skillImport" type="file" accept=".md,.markdown,text/markdown,text/plain" hidden/><input id="projectImport" type="file" accept=".json,application/json" hidden/>
+  </div>
+  <script src="workspace-store.js" defer></script>
+  <script src="epub-archive.js" defer></script>
+  <script src="app.js" defer></script>
+  <script src="cloud-ai.js" defer></script>
+  <script src="v05.js" defer></script>
+  <script src="v06.js" defer></script>
+  <script src="v07.js" defer></script>
+  <script src="distill-core.js" defer></script>
+  <script src="v08.js" defer></script>
+  <script src="plot-core.js" defer></script>
+  <script src="v09.js" defer></script>
+  <script src="narrative-core.js" defer></script>
+  <script src="v10.js" defer></script>
+  <script src="archive-core.js" defer></script>
+  <script src="v11.js" defer></script>
+  <script src="vendor/leaflet/leaflet.js" defer></script>
+  <script src="atlas-core.js" defer></script>
+  <script src="v12.js" defer></script>
+  <script src="generator-core.js" defer></script>
+  <script src="v13.js" defer></script>
+  <script src="v14.js" defer></script>
+  <script src="writing-prompts.js" defer></script>
+  <script src="v15.js" defer></script>
+  <script src="v16.js" defer></script>
+  <script src="chapter-trash.js" defer></script>
+  <script src="v17.js" defer></script>
+  <script src="book-actions.js" defer></script>
+  <script src="backup-restore.js" defer></script>
+  <script src="skill-batch.js" defer></script>
+  <script src="writing-sense-core.js" defer></script>
+  <script src="writing-sense.js" defer></script>
+  <script src="ui-fluid.js" defer></script>
+  <script src="ui-manuscript.js" defer></script>
+</body></html>

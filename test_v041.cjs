@@ -1,0 +1,34 @@
+'use strict';
+const fs=require('fs'),vm=require('vm'),assert=require('assert');
+const file=fs.readFileSync(__dirname+'/web/app.js','utf8');
+assert.ok(file.includes('id="swTestLocal"'),'Missing actual phone model generation test button');
+assert.ok(file.includes("panel.querySelector('#swProbeLocal').onclick=()=>run('models')"),'Connection probe must use /v1/models');
+assert.ok(file.includes('测试连接：请只回复「叙境就绪」。'),'Missing prompt');
+const js=file.replace(/bootstrap\(\);\s*$/,'');
+const win={},timers=[];
+const env={window:win,console,Date,JSON,Math,Intl,URL,AbortController,document:{},navigator:{},sessionStorage:{getItem:()=>null},setTimeout:(f,m)=>{const t=setTimeout(f,m);timers.push(t);return t},clearTimeout};
+vm.createContext(env);vm.runInContext(js,env);
+vm.runInContext('state=DEMO();state.settings.aiProvider="iridis";state.settings.localModel="default";state.settings.localContextChars=4000;',env);
+const calls=[];
+win.StoryBridge={localAiRequest:(id,route,body,key)=>{
+ calls.push({id,route,payload:JSON.parse(body),key});
+ setImmediate(()=>win.__storyLocalAiReceive(id,true,JSON.stringify({choices:[{message:{content:'叙境就绪'}}]})));
+}};
+(async()=>{
+ const answer=await vm.runInContext('chatAPI("小说指导","用第三人称写三句话",120)',env);
+ assert.equal(answer,'叙境就绪');
+ assert.equal(calls.length,1);
+ assert.equal(calls[0].route,'chat');
+ assert.equal(calls[0].payload.messages[0].role,'system');
+ assert.equal(calls[0].payload.messages[1].role,'user');
+ assert.equal(calls[0].payload.model,'default');
+ const java=fs.readFileSync(__dirname+'/android/app/src/main/java/com/storyweave/studio/MainActivity.java','utf8');
+ assert.ok(java.includes('http://127.0.0.1:8686'));
+ assert.ok(java.includes('apiKey.length() <= 256'));
+ assert.ok(java.includes('"/v1/chat/completions"'));
+ const manifest=fs.readFileSync(__dirname+'/android/app/src/main/AndroidManifest.xml','utf8');
+ assert.ok(manifest.includes('android.permission.INTERNET'));
+ assert.ok(manifest.includes('networkSecurityConfig'));
+ timers.forEach(clearTimeout);
+ console.log('PASS v0.4.1: model generation probe, loopback, cloud isolation, native bridge limits');
+})().catch(e=>{timers.forEach(clearTimeout);console.error(e);process.exit(1)});

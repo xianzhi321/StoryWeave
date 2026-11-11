@@ -1,0 +1,17 @@
+/* v1.9.13: keep off-screen directory and person rows out of layout/paint. */
+@supports (content-visibility: auto) {
+  .sw16-chapter-row, .person-list > .person {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 74px;
+  }
+}
+.sw38-more {display:block;width:100%;margin:16px 0 24px;min-height:48px;touch-action:manipulation}
+/* Let the mobile keyboard resize the dialog/editor without covering active fields. */
+@supports(height: 100dvh) {
+  .modal-backdrop {height:100dvh;inset:0 0 auto}
+  .modal {max-height:min(92dvh,820px);scroll-padding-bottom:32px}
+}
+#chapterText {scroll-margin-bottom:22vh}
+@media (prefers-reduced-motion: reduce) {
+  .sw38-more {animation:none;transition:none}
+}

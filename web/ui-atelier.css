@@ -1,0 +1,217 @@
+/* StoryWeave 1.9.12 · Quiet Atelier visual layer
+ * Editorial hierarchy, large touch targets and low-cost micro-interactions.
+ * This stylesheet does not depend on storage, rewriting the editor, or AI.
+ */
+:root {
+  --atelier-canvas: #f6f5f0;
+  --atelier-surface: #fffefa;
+  --atelier-raised: #fffdf8;
+  --atelier-ink: #28382f;
+  --atelier-muted: #69766c;
+  --atelier-line: #e2e5dc;
+  --atelier-accent: #305c48;
+  --atelier-accent-hi: #244735;
+  --atelier-tint: #e9f1e8;
+  --atelier-gold: #ae8b5c;
+  --atelier-shadow: 0 6px 22px rgba(41,61,46,.045);
+  --atelier-ring: 0 0 0 3px rgba(77,121,86,.18);
+  --atelier-motion: cubic-bezier(.2,.8,.2,1);
+}
+html { background: var(--atelier-canvas); }
+body:not(.focus-mode) { background: var(--atelier-canvas); color: var(--atelier-ink); }
+#app { background: var(--atelier-canvas); }
+#topbar {
+  min-height: 62px;
+  padding-inline: max(16px, env(safe-area-inset-left)) max(16px, env(safe-area-inset-right));
+  background: var(--atelier-canvas);
+  border-bottom: 1px solid var(--atelier-line);
+  box-shadow: none;
+}
+.brand { gap: 10px; color: var(--atelier-ink); font-size: 21px; letter-spacing: .07em; }
+.brand small { color: var(--atelier-gold); letter-spacing: .24em; }
+.brand-mark { border-radius: 13px; box-shadow: 0 3px 11px rgba(30,57,43,.13); }
+.sw16-book-context { gap: 12px; }
+.sw16-book-context strong { font-size: 17px; letter-spacing: .02em; }
+#sw16-back {
+  border: 1px solid var(--atelier-line);
+  background: var(--atelier-surface);
+  color: var(--atelier-accent);
+  border-radius: 13px;
+  min-height: 44px;
+  padding: 0 12px;
+}
+#bottomNav {
+  background: var(--atelier-canvas);
+  border-bottom: 1px solid var(--atelier-line);
+  padding-inline: 18px;
+}
+#bottomNav .nav-item { min-height: 49px; color: var(--atelier-muted); font-weight: 600; }
+#bottomNav .nav-item[aria-current="page"] { color: var(--atelier-accent); box-shadow: none; }
+#bottomNav .nav-item::after { height: 3px; left: calc(50% - 21px); right: calc(50% - 21px); border-radius: 3px 3px 0 0; background: var(--atelier-accent); }
+#screen { padding-bottom: max(26px, env(safe-area-inset-bottom)); }
+
+/* Bookshelf: a readable library instead of a tile dashboard. */
+.sw37-shelf-heading {
+  padding: 12px 1px 7px;
+  margin-bottom: 12px;
+  align-items: center;
+}
+.sw37-shelf-heading h1 {
+  color: var(--atelier-ink);
+  font-size: 25px;
+  font-weight: 690;
+  letter-spacing: .06em;
+}
+.sw37-shelf-heading .button,.sw37-shelf-heading button { border-radius: 13px; }
+.books { gap: 13px; align-items: stretch; }
+.sw18-card-wrap .book-card,.book-card {
+  overflow: hidden;
+  background: var(--atelier-surface);
+  border: 1px solid var(--atelier-line);
+  border-radius: 17px;
+  padding: 9px;
+  box-shadow: var(--atelier-shadow);
+}
+.book-cover { border-radius: 10px; }
+.book-card .book-name {
+  margin: 12px 4px 5px;
+  color: var(--atelier-ink);
+  line-height: 1.45;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .008em;
+}
+.book-card .book-info { color: var(--atelier-muted); line-height: 1.5; font-size: 11px; }
+.sw18-card-wrap .sw18-more {
+  right: 13px;
+  top: 13px;
+  border-color: rgba(255,255,255,.68);
+  background: rgba(255,253,247,.97);
+  color: var(--atelier-ink);
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.07);
+}
+.sw18-pinned { background: #f5ead5; color: #5f5239; border-radius: 7px; }
+#sw37-resume,.sw16-continue {
+  min-height: 60px;
+  border: 1px solid #d7e5d8;
+  border-radius: 15px;
+  background: var(--atelier-tint);
+  color: var(--atelier-accent-hi);
+  box-shadow: none;
+}
+.sw37-resume-label { font-size: 13px; }
+.sw37-shelf-filter[open],.sw37-shelf-filter.is-filtering {
+  border: 1px solid var(--atelier-line);
+  background: var(--atelier-raised);
+  border-radius: 15px;
+  padding: 8px 12px 12px;
+}
+
+/* Chapters: comfortable vertical rhythm and distinct active chapter. */
+.sw16-directory-heading { padding: 19px 0 14px; }
+.sw16-directory-heading h1 { font-size: 24px; letter-spacing: .035em; color: var(--atelier-ink); }
+.sw16-directory-heading p { color: var(--atelier-muted); line-height: 1.6; }
+.sw16-directory-tools,.sw19-directory-search { margin: 7px 0; color: var(--atelier-muted); }
+.sw16-directory-tools > summary,.sw19-directory-search > summary {
+  min-height: 45px;
+  display: flex;
+  align-items: center;
+  border-radius: 12px;
+  padding-inline: 12px;
+}
+.sw16-directory-tools[open],.sw19-directory-search[open] {
+  border: 1px solid var(--atelier-line);
+  background: var(--atelier-surface);
+  padding: 4px 10px 11px;
+}
+.sw16-directory-tools[open] > summary,.sw19-directory-search[open] > summary { padding-inline: 2px; }
+.sw16-chapter-row { border-top-color: var(--atelier-line); gap: 6px; }
+.sw16-chapter-link {
+  min-height: 63px;
+  padding: 12px 10px;
+  border-radius: 12px;
+  grid-template-columns: 2ch minmax(0,1fr) auto;
+  gap: 9px;
+}
+.sw16-chapter-link strong { font-size: 14px; font-weight: 650; line-height: 1.45; }
+.sw16-chapter-link small,.sw16-chapter-index { color: var(--atelier-muted); }
+.sw16-chapter-link[aria-current="true"] {
+  background: var(--atelier-tint);
+  box-shadow: inset 3px 0 var(--atelier-accent);
+}
+.sw19-jump-row { min-height: 52px; padding: 10px 12px; border-top-color: var(--atelier-line); }
+
+/* Writing: manuscript and caret stay absolutely still while entering text. */
+body:not(.focus-mode):not([data-sw16-paper="ink"]) .editor-shell {
+  border: 1px solid var(--atelier-line);
+  border-radius: 17px;
+  box-shadow: 0 8px 24px rgba(42,62,49,.055);
+}
+body:not([data-sw16-paper="ink"]) .editor-banner {
+  background: linear-gradient(115deg,#f6f5ee 0%,#fdfbf5 100%);
+  border-bottom: 1px solid var(--atelier-line);
+}
+body:not([data-sw16-paper="ink"]) .editor-title { color: var(--atelier-ink); }
+body:not([data-sw16-paper="ink"]) .sw-sense {
+  --sense-accent: var(--atelier-accent);
+  --sense-line: var(--atelier-line);
+  --sense-muted: var(--atelier-muted);
+}
+body:not([data-sw16-paper="ink"]) .sw-sense-line:hover { background: rgba(59,97,68,.035); }
+body:not(.focus-mode) .sw14-editor-bar { gap: 7px; }
+body:not(.focus-mode) .sw14-editor-bar :is(button,.sw15-ai-entry) { border-radius: 12px; }
+body[data-sw16-paper="ink"] #topbar { background: var(--sw16-panel); border-color: var(--sw16-edge); }
+body.focus-mode .editor-shell { box-shadow: none; border-radius: 0; }
+
+/* Shared controls and panels. Buttons stay at least 44 px high on touch. */
+.button,.icon-button,.sw18-more,.sw15-tool-sheet button,.sw18-menu-grid button {
+  touch-action: manipulation;
+}
+.button.primary { background: var(--atelier-accent); color: #fff; box-shadow: none; }
+.button.outline,.sw18-menu-grid button,.sw15-tool-sheet button { background: var(--atelier-surface); border-color: var(--atelier-line); color: var(--atelier-ink); }
+.button.primary:focus-visible,.icon-button:focus-visible,summary:focus-visible,
+.sw16-chapter-link:focus-visible,#sw16-back:focus-visible,.sw18-more:focus-visible {
+  outline: 2px solid var(--atelier-accent);
+  outline-offset: 3px;
+}
+.sw18-menu-grid button { border-radius: 15px; min-height: 88px; gap: 9px; }
+.sw18-menu-grid button span { border-radius: 11px; background: var(--atelier-tint); }
+.sw15-tool-sheet section > div { gap: 8px; }
+.sw15-tool-sheet button { min-height: 48px; border-radius: 12px; }
+.modal { background: var(--atelier-surface); border-radius: 24px 24px 0 0; }
+.modal-header h2 { color: var(--atelier-ink); letter-spacing: .015em; }
+.modal-close { background: #eff1eb; color: var(--atelier-muted); }
+.sw7-reference-drawer { background: var(--atelier-surface); }
+.toast { background: #263d32; border-radius: 14px; }
+
+/* Motion is limited to one navigation entrance or a deliberate tap. */
+@media (hover: hover) and (pointer: fine) {
+  .sw18-card-wrap .book-card:hover,.book-card:hover {
+    transform: translate3d(0,-2px,0);
+    border-color: #b7d0bd;
+    box-shadow: 0 10px 26px rgba(42,65,48,.095);
+  }
+  .sw16-chapter-link:hover,.sw19-jump-row:hover { background: #ecf2e9; }
+  .sw16-directory-tools > summary:hover,.sw19-directory-search > summary:hover { background: #f0f3ec; }
+}
+@media (pointer: coarse) {
+  :is(.button,.icon-button,.sw18-more,.sw16-chapter-link,.sw18-menu-grid button,#sw16-back):not(:disabled):active {
+    transform: scale(.985);
+  }
+}
+@media (max-width: 360px) {
+  #topbar { padding-inline: 12px; }
+  #bottomNav { padding-inline: 7px; }
+  .books { gap: 9px; }
+  .sw16-chapter-link { gap: 5px; padding-inline: 6px; }
+  .sw18-card-wrap .sw18-more { right: 11px; top: 11px; }
+}
+@media (min-width: 720px) {
+  #app { border-inline: 1px solid var(--atelier-line); }
+  .modal { border-radius: 22px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sw16-directory-tools > summary,.sw19-directory-search > summary { scroll-behavior: auto; }
+  .button,.icon-button,.sw18-more,.sw15-tool-sheet button,.sw18-menu-grid button,.sw16-chapter-link,#sw16-back { transition: none !important; }
+}

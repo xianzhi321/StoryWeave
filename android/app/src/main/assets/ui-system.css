@@ -1,0 +1,346 @@
+/* StoryWeave v1.9.15 — unified editorial visual system.
+   Layered last so the original components and their behavior remain intact.
+   No polling, JS animation, input handlers, or data persistence. */
+:root {
+  --swui-canvas: #f6f6f1;
+  --swui-surface: #fffefa;
+  --swui-surface-2: #f0f3ed;
+  --swui-ink: #28382f;
+  --swui-muted: #67776d;
+  --swui-subtle: #77877d;
+  --swui-line: #dfe6dc;
+  --swui-accent: #305c48;
+  --swui-accent-ink: #ffffff;
+  --swui-accent-soft: #e7f0e7;
+  --swui-warning-bg: #fbf4e7;
+  --swui-warning-ink: #7e6646;
+  --swui-shadow: 0 5px 20px rgba(28, 50, 39, .045);
+  --swui-font: system-ui, -apple-system, 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+  --swui-radius: 14px;
+  --swui-radius-sm: 10px;
+  --swui-ease: cubic-bezier(.2,.7,.2,1);
+}
+body[data-sw16-paper="ink"] {
+  --swui-canvas: #202925;
+  --swui-surface: #26322b;
+  --swui-surface-2: #2d3c32;
+  --swui-ink: #e7ece4;
+  --swui-muted: #b2c0b5;
+  --swui-subtle: #98ae9f;
+  --swui-line: #39483f;
+  --swui-accent: #b9dac4;
+  --swui-accent-ink: #1c3025;
+  --swui-accent-soft: #314a3c;
+  --swui-warning-bg: #453e2e;
+  --swui-warning-ink: #e2c99c;
+  --swui-shadow: none;
+  --atelier-canvas: var(--swui-canvas);
+  --atelier-surface: var(--swui-surface);
+  --atelier-raised: var(--swui-surface);
+  --atelier-ink: var(--swui-ink);
+  --atelier-muted: var(--swui-muted);
+  --atelier-line: var(--swui-line);
+  --atelier-accent: var(--swui-accent);
+  --atelier-accent-hi: var(--swui-accent);
+  --atelier-tint: var(--swui-accent-soft);
+  --atelier-shadow: none;
+  color-scheme: dark;
+}
+/* Global page foundation: cover the older purple/navy look on every tab. */
+body:not(.focus-mode) { background: var(--swui-canvas); color: var(--swui-ink); }
+body:not(.focus-mode) #app,
+body:not(.focus-mode) #screen { background: var(--swui-canvas); color: var(--swui-ink); }
+body #topbar, body #bottomNav {
+  background: var(--swui-canvas);
+  border-color: var(--swui-line);
+  color: var(--swui-ink);
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+body #bottomNav .nav-item { color: var(--swui-muted); }
+body #bottomNav .nav-item[aria-current="page"],
+body #bottomNav .nav-item.active { color: var(--swui-accent); }
+body #bottomNav .nav-item svg { stroke-width: 1.8; }
+body .brand, body .sw16-book-context strong,
+body .sw16-directory-heading h1,
+body .page-intro h1, body .hrow h3 { color: var(--swui-ink); }
+body:not([data-sw16-view="write"]) #sw16-back {
+  background: transparent;
+  color: var(--swui-ink);
+  border: 0;
+  padding-left: 0;
+  box-shadow: none;
+}
+body .page-intro { margin: 14px 2px 19px; align-items: flex-start; }
+body .page-intro h1 { font-size: clamp(22px,5.8vw,27px); line-height: 1.4; letter-spacing: .015em; }
+body .page-intro p, body .sw16-directory-heading p,
+body .small-note, body .empty-mini { color: var(--swui-muted); }
+body .section-label, body .tiny-label { color: var(--swui-subtle); }
+body :is(button,input,textarea,select) { font-family: var(--swui-font); }
+body :is(button,summary,[role="tab"]) { touch-action: manipulation; }
+body :is(input,textarea,select) { accent-color: var(--swui-accent); }
+/* Reusable cards, section headings, and list rhythm. */
+body :is(.panel,.small-card,.stat-card,.world-tile,.plot-card,.context-card,
+  .skill-hero,.person,.reading-panel,.sw10-chapter,.sw9-proposal,.sw8-job-card) {
+  background: var(--swui-surface);
+  background-image: none;
+  border: 1px solid var(--swui-line);
+  color: var(--swui-ink);
+  border-radius: var(--swui-radius);
+  box-shadow: var(--swui-shadow);
+}
+body :is(.panel,.small-card,.world-tile,.person,.skill-hero) :is(h2,h3,h4,strong) {
+  color: var(--swui-ink);
+}
+body :is(.panel,.small-card,.world-tile,.person,.skill-hero) :is(p,small) { color: var(--swui-muted); }
+body .panel { padding: 17px; margin: 12px 0; }
+body .hrow { margin-top: 20px; margin-bottom: 12px; }
+body .hrow h3 { font-size: 16px; font-weight: 700; }
+body .text-button { color: var(--swui-accent); font-size: 12px; }
+body .person-list { gap: 8px; }
+body .person {
+  min-height: 74px; padding: 12px 14px; gap: 12px;
+  text-align: left;
+}
+body .person > div:nth-child(2) { flex: 1; min-width: 0; }
+body .person .person-name { color: var(--swui-ink); font-size: 14px; font-weight: 680; }
+body .person .person-sub { color: var(--swui-muted); font-size: 12px; line-height: 1.5; }
+body .person .arrow { color: var(--swui-subtle); }
+body .avatar { background: var(--swui-accent-soft); color: var(--swui-accent); border-radius: 13px; font-family: var(--swui-font); font-weight: 700; }
+body .avatar.warm { background: var(--swui-surface-2); color: var(--swui-ink); }
+body .avatar.green { background: var(--swui-accent-soft); color: var(--swui-accent); }
+body .world-grid { gap: 10px; }
+body .world-tile { min-height: 127px; padding: 17px 14px; text-align: left; }
+body .world-tile .world-glyph { color: var(--swui-accent); margin-bottom: 10px; }
+body .world-tile strong { font-size: 13px; }
+body .world-tile small { display: block; margin-top: 7px; font-size: 11px; line-height: 1.55; }
+body .skill-hero { padding: 19px; }
+body .skill-hero::after { display: none; }
+body .skill-hero h3 { font-size: 18px; }
+body .skill-hero p { font-size: 12px; line-height: 1.7; }
+body .list-icon, body .file-icon { background: var(--swui-accent-soft); color: var(--swui-accent); border-radius: 11px; }
+body .skill-item { border-color: var(--swui-line); }
+body .skill-item :is(h4,strong) { color: var(--swui-ink); }
+body .skill-item :is(p,small) { color: var(--swui-muted); }
+body .world-grid, body .person-list { align-items: stretch; }
+/* Forms and actionable surfaces: consistent touch sizes and focus. */
+body .button { min-height: 43px; border-radius: 11px; font-weight: 650; box-shadow: none; }
+body :is(.button.primary,.button.purple,.button.gold) {
+  background: var(--swui-accent); color: var(--swui-accent-ink); border: 1px solid transparent;
+}
+body :is(.button.outline,.button.light,.sw15-tool-sheet button,.sw18-menu-grid button,
+  .tool-chip,.sw10-quick button,.sw10-inline-actions button,.sw10-event-actions button) {
+  background: var(--swui-surface); color: var(--swui-ink); border: 1px solid var(--swui-line);
+  box-shadow: none;
+}
+body :is(.button.outline,.button.light,.tool-chip,.sw15-tool-sheet button) { border-radius: var(--swui-radius-sm); }
+body :is(.tool-chip,.sw15-tool-sheet button,.sw18-menu-grid button) { min-height: 43px; }
+body :is(.icon-button,.sw18-more,.modal-close) {
+  color: var(--swui-muted); border-color: var(--swui-line); box-shadow: none;
+}
+body .pill, body .chip, body .plot-status {
+  background: var(--swui-accent-soft); color: var(--swui-accent); border: 1px solid var(--swui-line);
+}
+body .field label { color: var(--swui-muted); font-size: 12px; font-weight: 650; }
+body .field :is(input,select,textarea),
+body .modal :is(input:not([type="checkbox"]):not([type="radio"]),textarea,select),
+body .sw7-drawer-filter input {
+  background: var(--swui-surface);
+  color: var(--swui-ink);
+  border: 1px solid var(--swui-line);
+  border-radius: var(--swui-radius-sm);
+  min-height: 44px;
+  font-size: 14px;
+  box-shadow: none;
+}
+body :is(input,textarea,select):focus-visible {
+  border-color: var(--swui-accent) !important;
+  box-shadow: 0 0 0 2px var(--swui-accent-soft) !important;
+}
+body :is(button,summary,[role="tab"]):focus-visible {
+  outline: 2px solid var(--swui-accent);
+  outline-offset: 2px;
+}
+body .empty-mini,body .small-note { font-size: 12px; line-height: 1.7; }
+body .alert { background: var(--swui-warning-bg); color: var(--swui-warning-ink); border: 1px solid var(--swui-line); }
+/* Dialogs/drawers are part of the same application, not another theme. */
+body .modal-backdrop { background: rgba(12,22,16,.60); -webkit-backdrop-filter: none; backdrop-filter: none; }
+body .modal {
+  background: var(--swui-surface); color: var(--swui-ink);
+  border: 1px solid var(--swui-line);
+  border-radius: 22px 22px 0 0;
+  box-shadow: 0 -8px 28px rgba(10,25,16,.16);
+  padding: 20px 19px calc(23px + env(safe-area-inset-bottom));
+}
+body .modal-header { position: sticky; top: -20px; z-index: 2; padding: 0 0 11px; background: var(--swui-surface); border-bottom: 1px solid var(--swui-line); }
+body .modal-header h2 { color: var(--swui-ink); font: 700 19px/1.4 var(--swui-font); }
+body .modal-close { background: var(--swui-surface-2); border: 0; width: 35px; height: 35px; border-radius: 11px; }
+body :is(.sw7-reference-drawer,.sw15-tool-sheet,.sw18-menu-grid) { color: var(--swui-ink); }
+body .sw7-reference-drawer { background: var(--swui-surface); border: 1px solid var(--swui-line); box-shadow: 0 -8px 30px #0002; }
+body .sw7-drawer-mask { background: rgba(10,22,15,.65); backdrop-filter: none; }
+body .sw7-drawer-top :is(h2,p) { color: var(--swui-ink); }
+body .sw7-drawer-top p { color: var(--swui-muted); }
+body .sw7-person-summary,body .sw7-knows {
+  border: 1px solid var(--swui-line); background: var(--swui-surface-2); color: var(--swui-ink); box-shadow: none;
+}
+body .sw7-person-identity h3, body .sw7-person-facts p,body .sw7-knows p { color: var(--swui-ink); }
+body .sw7-person-identity p,body .sw7-person-facts span,body .sw7-knows strong { color: var(--swui-muted); }
+body .sw7-person-monogram { background: var(--swui-accent-soft); color: var(--swui-accent); }
+body .sw7-role-chip { background: var(--swui-surface-2); color: var(--swui-muted); border-color: var(--swui-line); }
+body .sw7-role-chip.is-active { background: var(--swui-accent); color: var(--swui-accent-ink); }
+/* Retain semantics for relationship colors, but make the background theme-correct. */
+body .relation-card { color: var(--swui-ink); }
+body .relation-card svg rect { fill: var(--swui-surface); }
+body .relation-card svg text:not(g text) { fill: var(--swui-muted); }
+body .relation-legend { color: var(--swui-muted); }
+body .relation-add { background: var(--swui-surface); color: var(--swui-accent); border: 1px dashed var(--swui-line); }
+body .sw15-tool-sheet section > div { gap: 9px; }
+body .sw15-tool-sheet h3 { color: var(--swui-ink); border-color: var(--swui-accent); font-family: var(--swui-font); font-size: 14px; }
+/* Harmonize legacy colorful help banners without replacing functionality. */
+body :is(.sw9-lab,.sw9-learn-cta,.sw10-hub,.studio-lab,.sw7-chapter-navigator) {
+  background: var(--swui-surface-2);
+  background-image: none;
+  border: 1px solid var(--swui-line);
+  color: var(--swui-ink);
+  box-shadow: none;
+  border-radius: var(--swui-radius);
+}
+body :is(.sw9-lab,.sw9-learn-cta,.sw10-hub,.studio-lab,.sw7-chapter-navigator) :is(h3,strong,b) { color: var(--swui-ink); }
+body :is(.sw9-lab,.sw9-learn-cta,.sw10-hub,.studio-lab,.sw7-chapter-navigator) :is(p,small,span) { color: var(--swui-muted); }
+body :is(.sw9-lab,.sw9-learn-cta,.sw10-hub,.studio-lab) .tiny-label { color: var(--swui-accent); }
+body .sw10-stats,body .sw9-metrics { border-color: var(--swui-line); }
+body .sw10-stats > div { border-color: var(--swui-line); }
+/* The active writing surface must remain flat. Never overlay the editor with a visual effect. */
+body[data-sw16-view="write"] .editor-shell,
+body[data-sw16-view="write"] #chapterText { box-shadow: none; }
+/* Support narrow Android screens without squeezing forms or cards. */
+@media (max-width: 370px) {
+  body .panel { padding: 14px; }
+  body .modal { padding-inline: 15px; }
+  body .world-tile { min-height: 118px; padding: 14px 11px; }
+  body .person { padding: 10px; }
+}
+@media (min-width: 720px) { body .modal { border-radius: 20px; } }
+@media (hover:hover) and (pointer:fine) {
+  body .person:hover,body .world-tile:hover { border-color: var(--swui-accent); }
+}
+@media (prefers-reduced-motion:reduce) {
+  body :is(.person,.world-tile,.button,.modal,.modal-backdrop,.sw7-reference-drawer) {
+    animation: none !important; transition: none !important;
+  }
+}
+/* Legacy chapter/world accordions: remove leftover ivory bars in ink mode. */
+body :is(.sw16-directory-tools,.sw19-directory-search,.sw15-details,.sw15-volume,
+  .sw14-project-nav,.sw16-paper-modal .sw17-setting) {
+  background: var(--swui-surface);
+  border-color: var(--swui-line);
+  color: var(--swui-ink);
+  border-radius: var(--swui-radius-sm);
+}
+body :is(.sw16-directory-tools,.sw19-directory-search) > summary {
+  background: transparent;
+  color: var(--swui-muted);
+  min-height: 44px;
+  padding: 10px 12px;
+  border-radius: var(--swui-radius-sm);
+}
+body .sw15-details summary,body .sw14-project-nav > summary { color: var(--swui-ink); }
+body #sw19-directory-query { background: var(--swui-surface); color: var(--swui-ink); border-color: var(--swui-line); }
+/* Character knowledge and POV: quiet editorial cards instead of navy marketing banners. */
+body :is(.v5-quick-lens,.v5-pov-summary,.v5-ledger,.v5-lens-hero,
+  .v5-knowledge-row,.v5-lens-result,.v5-ai-result) {
+  background: var(--swui-surface-2);
+  background-image: none;
+  border: 1px solid var(--swui-line);
+  color: var(--swui-ink);
+  border-radius: var(--swui-radius);
+  box-shadow: none;
+}
+body .v5-ledger::before { display: none; }
+body :is(.v5-quick-lens,.v5-pov-summary,.v5-lens-hero,.v5-ledger) h3,
+body :is(.v5-quick-lens,.v5-pov-summary,.v5-lens-hero,.v5-ledger) .tiny-label { color: var(--swui-ink); }
+body :is(.v5-quick-lens,.v5-pov-summary,.v5-lens-hero,.v5-ledger) p,
+body :is(.v5-quick-lens,.v5-pov-summary) .tiny-label { color: var(--swui-muted); }
+body :is(.v5-quick-lens,.v5-pov-summary) .button {
+  background: var(--swui-accent-soft);
+  color: var(--swui-accent);
+  border: 1px solid var(--swui-line);
+}
+body :is(.v5-fact-line,.v5-knowledge-row,.v5-ledger-stats,.v5-lens-line) { border-color: var(--swui-line); }
+body .v5-fact-line { background: var(--swui-surface); color: var(--swui-ink); }
+body .v5-fact-line small,body .v5-knowledge-heading p { color: var(--swui-muted); }
+body :is(.v5-knowledge-heading h3,.v5-character-small,.v5-lens-result h4,.v5-lens-line p) { color: var(--swui-ink); }
+/* AI collaboration: task chooser and content preview must have full contrast in ink. */
+body .sw15-ai-cover {
+  background: var(--swui-surface-2);
+  background-image: none;
+  border: 1px solid var(--swui-line);
+  color: var(--swui-ink);
+  border-radius: var(--swui-radius);
+  box-shadow: none;
+}
+body .sw15-ai-cover::after { display: none; }
+body .sw15-ai-cover :is(h3,.sw15-kicker) { color: var(--swui-ink); }
+body .sw15-ai-cover p { color: var(--swui-muted); }
+body .sw15-controls legend { color: var(--swui-ink); }
+body .sw15-task-grid button {
+  color: var(--swui-ink);
+  background: var(--swui-surface);
+  border-color: var(--swui-line);
+  min-height: 66px;
+  border-radius: var(--swui-radius-sm);
+}
+body .sw15-task-grid button[aria-pressed="true"] {
+  color: var(--swui-accent);
+  background: var(--swui-accent-soft);
+  border-color: var(--swui-accent);
+  box-shadow: inset 0 0 0 1px var(--swui-accent);
+}
+body .sw15-task-grid button strong { color: inherit; }
+body .sw15-task-grid button small { color: var(--swui-muted); }
+body .sw15-send p { color: var(--swui-muted); }
+body :is(.sw15-payload,.sw15-comparison pre,.sw15-result,.sw15-world,
+  .source-preview,.sw7-archive-diff,.sw7-archive-item,.sw7-search-head) {
+  color: var(--swui-ink);
+  background: var(--swui-surface-2);
+  background-image: none;
+  border: 1px solid var(--swui-line);
+}
+body :is(.sw15-result,.sw15-world) :is(h3,p,small) { color: var(--swui-ink); }
+body .sw15-result :is(small,p) { color: var(--swui-muted); }
+/* Keep relationships, tags, secondary lists readable in both themes. */
+body :is(.relation-record,.result-item,.plot-preview-row,.sw7-result,.sw7-archive-item,
+  .sw10-thread,.sw10-event,.sw10-issue,.sw10-history-item) {
+  background: var(--swui-surface);
+  color: var(--swui-ink);
+  border-color: var(--swui-line);
+}
+body :is(.relation-record,.result-item,.plot-preview-row,.sw7-result) :is(strong,p) { color: var(--swui-ink); }
+body :is(.relation-record,.result-item,.plot-preview-row,.sw7-result) :is(small,span) { color: var(--swui-muted); }
+body .sw7-role-cards { scrollbar-width: none; }
+body .sw7-close { background: var(--swui-surface-2); color: var(--swui-muted); }
+@media (max-width: 370px) { body .sw15-task-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+/* Old world/profile subtools and archive cards. */
+body:not([data-sw16-view="write"]) .sw15-secondary {
+  background: var(--swui-surface);
+  border: 1px solid var(--swui-line);
+  border-radius: var(--swui-radius-sm);
+  padding: 4px 12px;
+  color: var(--swui-ink);
+}
+body:not([data-sw16-view="write"]) .sw15-secondary > summary {
+  color: var(--swui-muted);
+  background: transparent;
+  min-height: 43px;
+  padding: 11px 0;
+}
+body .sw10-chapter h3,body .sw10-intro h3 { color: var(--swui-ink); }
+body .sw10-chapter > p,body .sw10-intro p { color: var(--swui-muted); }
+body .sw10-quick button { color: var(--swui-ink); background: var(--swui-surface-2); border-color: var(--swui-line); }
+body .sw10-quick button:focus-visible { outline: 2px solid var(--swui-accent); }
+body .sw15-ai-modal { color: var(--swui-ink); }
+body .sw15-details { background: var(--swui-surface-2); }
+body .sw15-details summary { color: var(--swui-ink); }
+body .sw7-person-facts > div { border-color: var(--swui-line); }
+body .sw7-person-identity { border-color: var(--swui-line); }

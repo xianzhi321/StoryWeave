@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 464">
+  <defs>
+    <linearGradient id="sky" x2=".25" y2="1"><stop stop-color="#172e38"/><stop offset="1" stop-color="#507171"/></linearGradient>
+    <linearGradient id="water" x1="0" x2="0" y2="1"><stop stop-color="#62817c"/><stop offset="1" stop-color="#112c35"/></linearGradient>
+    <pattern id="ripples" width="39" height="17" patternUnits="userSpaceOnUse"><path d="M1 3h19m6 9h12" stroke="#b1b4a1" stroke-width=".7" opacity=".28"/></pattern>
+  </defs>
+  <path fill="url(#sky)" d="M0 0h360v464H0z"/>
+  <circle cx="209" cy="105" r="42" fill="#d8bb82"/>
+  <path d="m0 198 56-54 17 9 43-43 25 19 29-7 72 59 34-30 29 12 55-34v123H0Z" fill="#486263"/>
+  <path d="m0 224 49-43 42 12 20-23 34 30 40-18 53 25 57-27 65 15v78H0Z" fill="#304d53"/>
+  <path d="M0 243q135-24 360-3v224H0Z" fill="url(#water)"/>
+  <path d="M0 241h360v223H0z" fill="url(#ripples)"/>
+  <path d="M0 321q73-5 148-72-54 71-100 104L0 367Zm360-34q-55-11-110-41 57 42 110 69Z" fill="#17353d"/>
+  <g fill="none" stroke="#bbab86" stroke-linecap="round"><path d="M19 272q61 8 129-14m52 17q71 7 138-3" opacity=".42"/><path d="M167 289h77m-55 12h33m-62 13h56m-34 13h18" opacity=".52"/></g>
+  <path fill="#142c31" d="M102 292h70l-18 9h-36zm14-1 15-20 25 20Z"/>
+  <path fill="#e8ba75" d="M135 284h7v6h-7z"/>
+  <path d="M24 28v52m7-52v28" stroke="#bca985" opacity=".7"/>
+</svg>

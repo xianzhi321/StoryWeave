@@ -1,0 +1,92 @@
+/* v1.9.10 — restrained writing sense UI; no AI, gamification or persistence. */
+.sw-sense {
+  --sense-accent: #587d6a;
+  --sense-line: var(--sw16-edge, #e7e0d4);
+  --sense-muted: var(--sw16-subtle, #787269);
+  --sense-soft: rgba(88, 125, 106, .07);
+  flex: none;
+  min-width: 0;
+  color: var(--sense-muted);
+  border-top: 1px solid var(--sense-line);
+  background: transparent;
+  font: 12px/1.5 -apple-system, BlinkMacSystemFont, 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.sw-sense *, .sw-sense *::before, .sw-sense *::after { box-sizing: border-box; }
+.sw-sense-line {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  min-height: 43px;
+  padding: 3px 15px;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.sw-sense-line::-webkit-details-marker { display: none; }
+.sw-sense-line::marker { content: ''; }
+.sw-sense-line:focus-visible { outline: 2px solid var(--sense-accent); outline-offset: -3px; border-radius: 5px; }
+.sw-sense-pill { display: inline-flex; align-items: center; gap: 6px; min-width: 0; white-space: nowrap; }
+.sw-sense-live-dot { flex: none; width: 6px; height: 6px; border-radius: 50%; background: #b7afa4; }
+.sw-sense[data-state="typing"] .sw-sense-live-dot { background: #649479; }
+.sw-sense[data-state="editing"] .sw-sense-live-dot { background: #a38d6b; }
+.sw-sense[data-state="thinking"] .sw-sense-live-dot { background: #8293b4; }
+.sw-sense-label { font-size: 11px; color: var(--sense-muted); }
+.sw-sense-value { color: inherit; font-size: 13px; font-weight: 650; letter-spacing: -.1px; }
+.sw-sense-unit { color: var(--sense-muted); font-size: 10px; }
+.sw-sense-separator { align-self: center; flex: none; width: 1px; height: 13px; background: var(--sense-line); margin: 0 13px; }
+.sw-sense-quiet { display: flex; align-items: center; min-width: 0; flex: 1; justify-content: flex-end; margin-left: 8px; }
+.sw-sense-state { font-size: 10px; color: var(--sense-muted); white-space: nowrap; }
+.sw-sense-expand { flex: none; width: 7px; height: 7px; margin: 0 2px 3px 12px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg); transition: transform .18s ease, margin .18s ease; opacity: .75; }
+.sw-sense[open] .sw-sense-expand { transform: rotate(225deg); margin-top: 6px; margin-bottom: 0; }
+.sw-sense-detail { padding: 13px 15px 14px; border-top: 1px solid var(--sense-line); }
+.sw-sense-section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+.sw-sense-section-head strong { font-size: 13px; line-height: 1.4; font-weight: 650; color: inherit; }
+.sw-sense-section-head small { font-size: 10px; color: var(--sense-muted); }
+.sw-sense-summary { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin: 0 0 7px; }
+.sw-sense-summary strong { font-size: 21px; line-height: 1.25; font-weight: 650; letter-spacing: -.5px; color: var(--sense-accent); }
+.sw-sense-summary small { font-size: 11px; font-weight: 500; margin-left: 4px; letter-spacing: 0; color: var(--sense-muted); }
+.sw-sense-summary > span { font-size: 10px; color: var(--sense-muted); }
+.sw-sense-chart-frame { position: relative; padding: 5px 0 0; }
+#sw-sense-chart { display: block; width: 100%; height: 90px; overflow: visible; }
+.sw-sense-grid { stroke: var(--sense-line); stroke-width: 1; }
+#sw-sense-curve { stroke: var(--sense-accent); stroke-width: 2.5; fill: none; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+#sw-sense-area { fill: var(--sense-soft); }
+.sw-sense-chart-axis { display: flex; align-items: center; justify-content: space-between; font-size: 10px; color: var(--sense-muted); margin-top: 3px; }
+.sw-sense-empty { display: none; position: absolute; inset: 5px 0 16px; align-items: center; justify-content: center; font-size: 11px; color: var(--sense-muted); pointer-events: none; }
+.sw-sense[data-empty="true"] .sw-sense-empty { display: flex; }
+.sw-sense-divider { height: 1px; background: var(--sense-line); margin: 15px 0 12px; }
+.sw-sense-totals-title { font-size: 11px; font-weight: 650; margin: 0 0 9px; }
+.sw-sense-totals { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; margin-top: 9px; }
+.sw-sense-total { min-width: 0; display: flex; align-items: flex-start; flex-direction: column; gap: 3px; }
+.sw-sense-total-label { display: flex; align-items: center; gap: 5px; font-size: 10px; white-space: nowrap; }
+.sw-sense-total-label::before { content: ''; width: 6px; height: 6px; flex: none; border-radius: 100%; background: #739d86; }
+.sw-sense-total:nth-child(2) .sw-sense-total-label::before { background: #8e9cb8; }
+.sw-sense-total:nth-child(3) .sw-sense-total-label::before { background: #beaa8a; }
+.sw-sense-total b { font-size: 13px; font-weight: 650; color: inherit; }
+.sw-sense-stack { display: flex; width: 100%; height: 5px; border-radius: 4px; background: var(--sense-line); overflow: hidden; }
+.sw-sense-stack > span { display: block; width: 0; transition: width .2s linear; }
+#sw-sense-stack-typing { background: #739d86; }
+#sw-sense-stack-thinking { background: #8e9cb8; }
+#sw-sense-stack-editing { background: #beaa8a; }
+.sw-sense-note { margin: 12px 0 0; font-size: 10px; color: var(--sense-muted); line-height: 1.7; }
+body[data-sw16-paper="ink"] .sw-sense { --sense-accent: #afceb6; --sense-soft: rgba(175,206,182,.10); }
+body[data-sw16-paper="ink"] .sw-sense-line, body[data-sw16-paper="ink"] .sw-sense-detail { color: var(--sw16-text); }
+body.focus-mode .sw-sense { flex: none; }
+body.focus-mode .sw-sense-line { min-height: 39px; }
+body.focus-mode .sw-sense-detail { max-height: min(36dvh, 285px); overflow-y: auto; overscroll-behavior: contain; }
+@media (max-width: 480px) {
+  .sw-sense-line { padding-left: 12px; padding-right: 12px; min-height: 42px; }
+  .sw-sense-detail { padding: 13px 12px 14px; }
+  .sw-sense-quiet { margin-left: 4px; }
+}
+@media (max-width: 350px) {
+  .sw-sense-line { padding-left: 9px; padding-right: 9px; }
+  .sw-sense-separator { margin-left: 9px; margin-right: 9px; }
+  .sw-sense-state { display: none; }
+  .sw-sense-expand { margin-left: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sw-sense-expand, .sw-sense-stack > span { transition: none; }
+}

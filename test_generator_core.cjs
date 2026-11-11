@@ -1,0 +1,24 @@
+const assert=require('node:assert/strict');
+const Core=require('./web/generator-core.js'),Atlas=require('./web/atlas-core.js');
+const config={seed:'test-42',template:'continents',style:'physical'};
+const result={...config,engine:'Azgaar 1.109.1',width:1200,height:800,image:'data:image/png;base64,AAAA',
+ settlements:[{name:'白石城',x:100,y:250,capital:true,country:'白石王国'},{name:'港口',x:800,y:400,port:true}]};
+let serial=0;const nextId=()=>String(++serial);
+const {map,places}=Core.build(result,'世界','one',nextId,true);
+assert.equal(map.mode,'fiction');assert.equal(places.length,2);assert.equal(places[1].type,'港口');
+assert.deepEqual(places[0].position,{x:100,y:250});assert.equal(map.generation.seed,'test-42');
+assert(places.every(p=>p.mapId===map.id&&p.projectId==='one'));assert.equal(new Set([map.id,...places.map(p=>p.id)]).size,3);
+assert.equal(Core.build(result,'世界','two',nextId,false).places.length,0);
+assert.throws(()=>Core.config({...config,seed:'../../index?x=1'}));
+assert.throws(()=>Core.config({...config,template:'__proto__'}));
+assert.throws(()=>Core.validate({...result,seed:'other'},config));
+assert.throws(()=>Core.validate({...result,image:'data:image/svg+xml;base64,AAAA'},config));
+assert.throws(()=>Core.validate({...result,settlements:[{name:'非法',x:1201,y:0}]},config));
+assert.throws(()=>Core.validate({...result,settlements:Array(201).fill(result.settlements[0])},config));
+assert.throws(()=>Core.validate({...result,width:4097},config));
+assert.throws(()=>Core.build(result,'','one',nextId,true));
+const normalized=Atlas.normalize({projects:[{id:'one'}],worldMaps:[map],worldPlaces:places,timelineEvents:[]});
+assert.deepEqual(normalized.worldMaps[0].generation,map.generation);
+assert.equal(Atlas.validMap({...map,generation:{...map.generation,seed:'<script>'}},'one').generation,undefined);
+assert.equal(Atlas.validMap({...map,generation:undefined},'one').generation,undefined);
+console.log('PASS generator core: strict settings/results, bounds, provenance, independent IDs, optional import and backup');

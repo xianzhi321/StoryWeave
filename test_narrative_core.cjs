@@ -1,0 +1,52 @@
+'use strict';
+const assert=require('node:assert/strict');
+const C=require('./web/narrative-core.js');
+const project={id:'p1',chapters:[{id:'c1',title:'第一章',text:'林澈在门口发现一张车票。'}, {id:'c2',title:'第二章',text:'沈雾终于拿出了录音。'}, {id:'c3',title:'第三章',text:'两人决定公开真相。'}]};
+const plots=[{id:'pl1',projectId:'p1',title:'失踪车票',status:'发展中'}];
+const link1=C.validatePlotLink({id:'l1',plotId:'pl1',chapterId:'c1',stage:'planted',note:'首次出现'},project,plots,project.chapters,[]);
+const link2=C.validatePlotLink({id:'l2',plotId:'pl1',chapterId:'c3',stage:'payoff',note:'真相揭示'},project,plots,project.chapters,[link1]);
+assert.equal(C.auditPlotLinks(plots,[link1,link2],project.chapters).length,0);
+assert.throws(()=>C.validatePlotLink({plotId:'pl1',chapterId:'c1',stage:'planted'},project,plots,project.chapters,[link1]),/相同阶段/);
+const latePlant=C.validatePlotLink({id:'l3',plotId:'pl1',chapterId:'c3',stage:'planted'},project,plots,project.chapters,[link1,link2]);
+const earlyPayoff=C.validatePlotLink({id:'l4',plotId:'pl1',chapterId:'c1',stage:'payoff'},project,plots,project.chapters,[link1,link2,latePlant]);
+assert(C.auditPlotLinks(plots,[latePlant,earlyPayoff],project.chapters).some(x=>x.id.includes('plot-order')));
+const relation={id:'r1',projectId:'p1',a:'a',b:'b',type:'旧识',detail:'原本相识'};
+const roles=[{id:'a'},{id:'b'}];
+const ev1=C.createRelationshipEvent({id:'re1',chapterId:'c1',afterType:'互相试探',afterTrust:10,cause:'两人发现对方有所隐瞒'}, {...relation,initialType:'旧识',initialTrust:0},project,project.chapters,[]);
+const ev2=C.createRelationshipEvent({id:'re2',chapterId:'c3',afterType:'暂时结盟',afterTrust:55,cause:'共同面对威胁'}, {...relation,initialType:'旧识',initialTrust:0},project,project.chapters,[ev1]);
+assert.equal(C.relationStateAt({...relation,initialType:'旧识',initialTrust:0},'c2',project.chapters,[ev1,ev2]).type,'互相试探');
+assert.equal(C.relationStateAt({...relation,initialType:'旧识',initialTrust:0},'c3',project.chapters,[ev1,ev2]).trust,55);
+assert.equal(C.applyLatestRelationship({...relation,initialType:'旧识',initialTrust:0},[ev1,ev2],project.chapters).type,'暂时结盟');
+const event1=C.validateTimelineEvent({title:'车票出现',storyDate:'1042-01-03',chapterId:'c1',participants:['a'],description:'车票在书店出现'},project,project.chapters,roles);
+const event2=C.validateTimelineEvent({title:'录音公开',storyDate:'1041-12-01',chapterId:'c2',description:'录音公开'},project,project.chapters,roles);
+assert(C.auditTimeline([event1,event2],project.chapters).some(x=>x.id.includes('time-reverse')));
+assert.throws(()=>C.validateTimelineEvent({title:'错误日期',storyDate:'1042-19-40',chapterId:'c1'},project,project.chapters,roles),/月份/);
+const flashback=C.validateTimelineEvent({title:'旧日回忆',storyDate:'1030-01-01',chapterId:'c2',isFlashback:true},project,project.chapters,roles);
+assert(!C.auditTimeline([event1,flashback],project.chapters).some(x=>x.eventId===flashback.id));
+const validReply=JSON.stringify({findings:[{chapterId:'c1',severity:'warning',title:'人物知道得过早',detail:'该角色在当前章节尚未获得此信息，后文却已经作出回应。',quote:'林澈在门口发现一张车票。',suggestion:'补充信息来源或调整反应。'},{chapterId:'c2',severity:'critical',title:'虚构证据',detail:'这一条引用并不存在于章节。',quote:'这段文本完全没有出现',suggestion:''}]});
+const parsed=C.parseAuditFindings(validReply,project,['c1','c2']);
+assert.equal(parsed.valid.length,1);assert.equal(parsed.rejectedCount,1);assert.equal(parsed.valid[0].offset,0);
+assert.throws(()=>C.parseAuditFindings('not json',project,['c1']),/合法 JSON/);
+assert.throws(()=>C.validateFindingDecision({...parsed.valid[0],status:'acknowledged'},project),/已处理/);
+const payload=C.buildAuditPayload(project,['c1'],roles,plots,[],[]);
+assert.equal(payload.chapters.length,1);assert(!('secret' in payload.characters[0]));
+const longProject={...project,chapters:project.chapters.map(c=>({...c,text:'长篇正文'.repeat(400)}))};
+const bounded=C.buildAuditPayload(longProject,['c1','c2','c3'],roles,plots,[],[],{maxChapters:2,maxTotalChars:800,maxEachChars:4200});
+assert.equal(bounded.chapters.length,2);assert(bounded.chapters.reduce((n,x)=>n+x.text.length,0)<=800);assert(bounded.chapters.every(x=>x.truncated));assert(bounded.chapters[0].text.length===400&&bounded.chapters[1].text.length===400);
+const gap=C.auditRelationshipHistory([relation],[ev1,{...ev2,beforeTrust:99}],project.chapters,roles);assert(gap.some(x=>x.id.includes('rel-gap')));
+const all=C.auditContinuity({project,plots,plotLinks:[link1,link2],relations:[relation],relationshipHistory:[ev1,ev2],timelineEvents:[event1,event2],characters:roles});
+assert(all.issues.some(x=>x.kind==='timeline'));
+console.log('PASS v1.0 core: chapter-level foreshadow links, order/duplicate validation, relationship state reconstruction, trust history, story-date chronology, flashback exemptions, evidence-verified AI findings, privacy-bounded audit payload');
+const heavyRoles=Array.from({length:18},(_,i)=>({id:'r'+i,name:'人物',personality:'性格'.repeat(150),goal:'目标'.repeat(120)}));
+const escapedProject={...project,summary:'简介'.repeat(350),chapters:project.chapters.map(c=>({...c,text:('😀"\n\\长篇正文').repeat(900)}))};
+for(const budget of [1200,2000,4000,8000]){
+ const request=C.buildAuditPayload(escapedProject,['c1','c2'],heavyRoles,plots,[],[],{maxChapters:2,maxPayloadChars:budget});
+ assert(JSON.stringify(request).length<=budget);
+ assert(request.chapters.every(ch=>ch.text.length>8&&!/[\uD800-\uDBFF]$/.test(ch.text)));
+ assert(request.chapters.every(ch=>escapedProject.chapters.find(original=>original.id===ch.id).text.startsWith(ch.text)));
+}
+const oversizedQuote='文'.repeat(121);
+assert.equal(C.parseAuditFindings(JSON.stringify({findings:[{chapterId:'c1',quote:oversizedQuote,
+ severity:'warning',title:'超长引用',detail:'原文证据超过约定的最大长度，必须拒绝'}]}),
+ {chapters:[{id:'c1',text:oversizedQuote}]},['c1']).valid.length,0);
+console.log('PASS v1.1.1 audit: serialized context budget, escaped input, Unicode boundaries, strict quote length');

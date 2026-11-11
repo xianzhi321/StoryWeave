@@ -1,0 +1,279 @@
+/* StoryWeave 1.9.14 — Quiet Manuscript
+   The editor is a writing surface, not a stack of ornamental cards.
+   Scope changes to the write view; keep the rest of the application untouched. */
+body[data-sw16-view="write"] {
+  --sw39-canvas: #f8f8f4;
+  --sw39-ink: #28372e;
+  --sw39-muted: #79837b;
+  --sw39-line: #e3e8e0;
+  --sw39-highlight: #396b53;
+  background: var(--sw39-canvas);
+  color: var(--sw39-ink);
+}
+body[data-sw16-view="write"] #app,
+body[data-sw16-view="write"] #screen {
+  background: var(--sw39-canvas);
+}
+body[data-sw16-view="write"] #app { min-height: 100dvh; }
+body[data-sw16-view="write"] #screen {
+  padding: 0 max(17px,env(safe-area-inset-left)) max(18px,env(safe-area-inset-bottom));
+  animation: none;
+}
+body[data-sw16-view="write"] #topbar {
+  min-height: 54px;
+  padding: 6px max(17px,env(safe-area-inset-left)) 5px;
+  background: var(--sw39-canvas);
+  border-bottom: 1px solid var(--sw39-line);
+  box-shadow: none;
+}
+body[data-sw16-view="write"] .sw16-book-context { gap: 7px; }
+body[data-sw16-view="write"] .sw16-book-context strong {
+  font-family: system-ui,-apple-system,'Noto Sans SC',sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--sw39-ink);
+}
+body[data-sw16-view="write"] #sw16-back {
+  border: 0;
+  background: transparent;
+  color: var(--sw39-ink);
+  padding: 0 6px 0 0;
+  min-height: 42px;
+  font-size: 14px;
+  box-shadow: none;
+}
+/* One quiet row, not four big boxed buttons. */
+body[data-sw16-view="write"]:not(.focus-mode) .sw14-editor-bar {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
+  margin: 0 -4px 0;
+  padding: 7px 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border: 0;
+  background: transparent;
+}
+body[data-sw16-view="write"] .sw14-editor-bar::-webkit-scrollbar { display: none; }
+body[data-sw16-view="write"]:not(.focus-mode) .sw14-editor-bar > button {
+  flex: 0 0 auto;
+  min-height: 39px;
+  padding: 0 12px;
+  margin: 0;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--sw39-muted);
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: none;
+  white-space: nowrap;
+}
+body[data-sw16-view="write"]:not(.focus-mode) .sw14-editor-bar > button.sw15-ai-entry,
+body[data-sw16-view="write"]:not(.focus-mode) .sw14-editor-bar > button.sw17-quick-ai {
+  background: color-mix(in srgb,var(--sw39-highlight) 12%,transparent);
+  color: var(--sw39-highlight);
+  border: 0;
+}
+body[data-sw16-view="write"]:not(.focus-mode) .sw14-editor-bar > button:active {
+  transform: scale(.97);
+  background: color-mix(in srgb,var(--sw39-highlight) 12%,transparent);
+}
+/* Manuscript becomes a single uninterrupted reading surface. */
+body[data-sw16-view="write"]:not(.focus-mode) .editor-shell {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+body[data-sw16-view="write"] .editor-banner,
+body[data-sw16-view="write"]:not(.focus-mode) .editor-banner {
+  padding: 18px 6px 12px;
+  border: 0;
+  border-bottom: 1px solid var(--sw39-line);
+  background: transparent;
+}
+body[data-sw16-view="write"] .editor-banner > label {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--sw39-muted);
+  opacity: .8;
+  font: 600 10px/1.3 system-ui,sans-serif;
+  letter-spacing: .14em;
+}
+body[data-sw16-view="write"] .editor-title {
+  display: block;
+  width: 100%;
+  color: var(--sw39-ink);
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  font-family: system-ui,-apple-system,'Noto Sans SC',sans-serif;
+  font-size: clamp(21px,5.6vw,25px);
+  font-weight: 650;
+  line-height: 1.4;
+  letter-spacing: .015em;
+}
+body[data-sw16-view="write"] .editor-title::placeholder { color: var(--sw39-muted); opacity: .75; }
+body[data-sw16-view="write"] #chapterTitle:focus,
+body[data-sw16-view="write"] #chapterText:focus {
+  box-shadow: none !important;
+  outline: none;
+}
+body[data-sw16-view="write"]:not(.focus-mode) #chapterText {
+  width: 100%;
+  min-height: clamp(330px,53dvh,750px);
+  padding: 24px 6px 18px;
+  resize: vertical;
+  border: 0;
+  border-radius: 0;
+  background-color: var(--sw39-canvas);
+  color: var(--sw39-ink);
+  font-size: var(--sw14-font,17px);
+  line-height: var(--sw14-leading,1.9);
+  box-shadow: none;
+  caret-color: var(--sw39-highlight);
+}
+body[data-sw16-view="write"] #chapterText::placeholder {
+  color: var(--sw39-muted);
+  opacity: .72;
+}
+/* New default: quiet view. Existing art/ruling choices remain stored and can be shown by switching this off. */
+body[data-sw16-view="write"][data-sw17-quiet="true"] #chapterText {
+  background-image: none !important;
+}
+body[data-sw16-view="write"] .sw-sense {
+  background: transparent;
+  border-top: 1px solid var(--sw39-line);
+  color: var(--sw39-muted);
+  --sense-line: var(--sw39-line);
+  --sense-muted: var(--sw39-muted);
+  --sense-accent: var(--sw39-highlight);
+}
+body[data-sw16-view="write"] .sw-sense-line { min-height: 40px; padding-inline: 6px; }
+body[data-sw16-view="write"] .sw-sense-quiet { margin-left: auto; }
+body[data-sw16-view="write"] .editor-footer {
+  padding: 10px 6px;
+  border-top: 0;
+  background: transparent;
+  color: var(--sw39-muted);
+  font-size: 11px;
+}
+body[data-sw16-view="write"] .sw15-chapter-meta {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+/* Hide the attention-grabbing white toolbox card until expanded. */
+body[data-sw16-view="write"] .sw15-secondary,
+body[data-sw16-view="write"] .sw15-secondary:not([open]) {
+  margin: 0;
+  padding: 0 0 16px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+body[data-sw16-view="write"] .sw15-secondary > summary {
+  display: inline-flex;
+  width: auto;
+  min-height: 34px;
+  align-items: center;
+  padding: 0 6px;
+  color: var(--sw39-muted);
+  background: transparent;
+  border: 0;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+body[data-sw16-view="write"] .sw15-secondary[open] {
+  padding: 0 0 20px;
+  border-top: 1px solid var(--sw39-line);
+}
+body[data-sw16-view="write"] .sw15-secondary[open] > summary { margin: 8px 0; }
+body[data-sw16-view="write"] .sw15-secondary[open] .tool-row { margin: 4px 0; }
+/* Muted night mode with consistent dark surfaces, not layered borders. */
+body[data-sw16-view="write"][data-sw16-paper="ink"] {
+  --sw39-canvas: #202925;
+  --sw39-ink: #e7ece4;
+  --sw39-muted: #9eada1;
+  --sw39-line: #35453c;
+  --sw39-highlight: #a4d0b4;
+  color-scheme: dark;
+}
+body[data-sw16-view="write"][data-sw16-paper="ink"] :is(#topbar,#app,#screen,.editor-shell,.editor-banner,#chapterText,.editor-footer,.sw14-editor-bar,.sw15-secondary) {
+  background-color: var(--sw39-canvas);
+  color: var(--sw39-ink);
+  border-color: var(--sw39-line);
+  box-shadow: none;
+}
+body[data-sw16-view="write"][data-sw16-paper="ink"] #topbar,
+body[data-sw16-view="write"][data-sw16-paper="ink"] .editor-banner { background-image: none; }
+body[data-sw16-view="write"][data-sw16-paper="ink"] .editor-title { color: var(--sw39-ink); }
+body[data-sw16-view="write"][data-sw16-paper="ink"] .sw-sense-line { color: var(--sw39-muted); }
+body[data-sw16-view="write"][data-sw16-paper="ink"] .sw-sense-value,
+body[data-sw16-view="write"][data-sw16-paper="ink"] #charCount { color: #bed9c5; }
+body[data-sw16-view="write"][data-sw16-paper="ink"] .sw15-secondary > summary {
+  background: transparent;
+  color: var(--sw39-muted);
+}
+body[data-sw16-view="write"][data-sw16-paper="ink"] .sw14-editor-bar > button:not(.sw17-quick-ai) {
+  border: 0;
+  background: transparent;
+  color: var(--sw39-muted);
+}
+body[data-sw16-view="write"][data-sw16-paper="ink"] .sw14-editor-bar > button.sw15-ai-entry { color: var(--sw39-highlight); background: #30483b; }
+body[data-sw16-view="write"][data-sw16-paper="ink"] #sw16-back { background: transparent; color: var(--sw39-ink); }
+body[data-sw16-view="write"][data-sw16-paper="ink"] .editor-footer { color: var(--sw39-muted); }
+body[data-sw16-view="write"][data-sw16-paper="ink"] .sw-sense { border-color: var(--sw39-line); }
+@media (max-width: 360px) {
+  body[data-sw16-view="write"] #screen { padding-inline: 14px; }
+  body[data-sw16-view="write"]:not(.focus-mode) .sw14-editor-bar > button { padding-inline: 9px; }
+  body[data-sw16-view="write"] .sw16-book-context strong { font-size: 14px; }
+}
+@media (max-height: 620px) {
+  body[data-sw16-view="write"]:not(.focus-mode) #chapterText { min-height: max(230px,42dvh); }
+}
+@media (prefers-reduced-motion: reduce) {
+  body[data-sw16-view="write"] .sw14-editor-bar > button { transition: none !important; }
+}
+
+/* Higher-priority ink-paper rules from the legacy theme must not rebox the navigation. */
+body[data-sw16-view="write"][data-sw16-paper="ink"] #sw16-back {
+  background: transparent !important; border: 0 !important; border-radius: 9px;
+  padding: 0 7px 0 0; color: var(--sw39-ink) !important;
+}
+body[data-sw16-view="write"][data-sw16-paper="ink"]:not(.focus-mode) .sw14-editor-bar > button {
+  background: transparent !important; border: 0 !important;
+  border-radius: 9px; color: var(--sw39-muted) !important;
+}
+body[data-sw16-view="write"][data-sw16-paper="ink"]:not(.focus-mode) .sw14-editor-bar > button.sw15-ai-entry {
+  background: #2e4438 !important; color: #b9dac4 !important;
+}
+body[data-sw16-view="write"]:not(.focus-mode) .sw14-editor-bar button.sw14-focus-button { font-weight: 550; }
+/* Optional expanded tools inherit the paper palette rather than flashing white. */
+body[data-sw16-view="write"][data-sw16-paper="ink"] .sw15-secondary[open]
+:is(.panel,.tool-chip,.small-card,.sw7-chapter-navigator) {
+  background: #26342c;
+  border-color: var(--sw39-line);
+  color: var(--sw39-ink);
+  box-shadow: none;
+}
+body[data-sw16-view="write"][data-sw16-paper="ink"] .sw15-secondary[open]
+:is(.panel p,.panel h3,.small-note,.tool-chip svg) { color: var(--sw39-muted); }

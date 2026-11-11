@@ -12,7 +12,7 @@ assert 'backupIo.execute' in activity
 assert 'writer.execute' in activity
 assert 'NativeStoryRepository.readBounded(in)' in activity
 assert 'NativeStoryRepository.parse(raw)' in activity
-assert 'BaseInputConnection.getComposingSpanStart(e)>=0' in activity
+assert 'BaseInputConnection.getComposingSpanStart(editable)' in activity and 'NativeImePolicy.pendingCandidate' in activity
 assert 'if(delta>0&&delta<=8)' in activity
 assert 'rememberEditorPosition()' in activity
 assert 'restoreEditorPosition(chapterBody,chapterId)' in activity
@@ -23,7 +23,7 @@ assert 'editRevision>persistedRevision' in activity
 assert 'if(editRevision<=queuedRevision)return' in activity
 assert 'diskWriteFailed.set(true)' in activity
 assert 'if(storageBlocked || diskWriteFailed.get())' in activity
-assert 'if(diskWriteFailed.get())throw new java.io.IOException' in activity
+assert 'if(!recovery && diskWriteFailed.get())throw new java.io.IOException' in activity
 assert 'libraryEpoch++' in activity
 assert 'setAdapter(adapter' in activity # no huge String[] array for directory dialog
 assert 'storage.startWrite()' in repo and 'storage.failWrite(output)' in repo
