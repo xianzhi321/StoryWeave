@@ -470,8 +470,32 @@ public final class NativeTabletActivity extends Activity {
         if(subtitle!=null)add(wrap,text(subtitle,12,false,secondary()),-1,26);
         add(parent,wrap,-1,-2);divider(parent);
     }
+    /** 书架卡片副标题：章节数 + 按中文口径统计的正文字数。纯读，不改作品库。 */
+    private String chapterWordCountLine(JSONObject project){
+        JSONArray chapters=project==null?null:project.optJSONArray("chapters");
+        int count=chapters==null?0:chapters.length();
+        int chars=0;
+        if(chapters!=null)for(int i=0;i<chapters.length();i++){
+            JSONObject ch=chapters.optJSONObject(i);
+            if(ch!=null)chars+=WordCountPolicy.countManuscriptChars(ch.optString("text"));
+        }
+        return "章节 "+count+" · "+chars+" 字";
+    }
     private void buildBooks(){
         heading(mainHost,"我的作品","原生平板书架 · 本地保存");
+        // 只读数字回看：累加既有章节正文，不写作品库、不加字段、无游戏化设计。
+        int totalChars=0;
+        JSONArray allProjects=library.optJSONArray("projects");
+        if(allProjects!=null)for(int p=0;p<allProjects.length();p++){
+            JSONObject prj=allProjects.optJSONObject(p);
+            JSONArray chs=prj==null?null:prj.optJSONArray("chapters");
+            if(chs!=null)for(int c=0;c<chs.length();c++){
+                JSONObject ch=chs.optJSONObject(c);
+                if(ch!=null)totalChars+=WordCountPolicy.countManuscriptChars(ch.optString("text"));
+            }
+        }
+        TextView statLine=text("已写下 "+totalChars+" 字",13,false,secondary());
+        statLine.setPadding(dp(22),dp(4),dp(22),dp(8));add(mainHost,statLine,-1,26);
         LinearLayout actions=row();actions.setPadding(dp(18),dp(12),dp(18),dp(12));
         add(actions,initialReadFailed?
             button("从备份恢复",this::importBackup):button("新建作品",this::newWork),126,44);
@@ -503,7 +527,7 @@ public final class NativeTabletActivity extends Activity {
                     add(outer,content,-1,-2);
                 }
                 ((TextView)content.getChildAt(0)).setText(project.optString("title","未命名作品"));
-                ((TextView)content.getChildAt(1)).setText("章节 "+project.optJSONArray("chapters").length()+" · "+project.optString("genre","点击继续写作"));
+                ((TextView)content.getChildAt(1)).setText(chapterWordCountLine(project));
                 return outer;
             }
         });
@@ -669,10 +693,47 @@ public final class NativeTabletActivity extends Activity {
         int shown=0;
         if(chars!=null)for(int i=0;i<chars.length();i++){
             JSONObject obj=chars.optJSONObject(i);if(obj==null||!workId.equals(obj.optString("projectId")))continue;
-            add(list,text("· "+obj.optString("name")+"   "+obj.optString("role"),15,false,foreground()),-1,44);shown++;
+            CharacterCard card=new CharacterCard(obj.optString("name"),obj.optString("role"),
+                obj.optString("goal"),null,obj.optString("personality"),obj.optString("arc"));
+            if(card.isEmpty())continue;
+            add(list,text("· "+card.summaryLine(),15,false,foreground()),-1,44);
+            // 既有字段只读展示：性格与目标（旧版 characters 自带，不新增任何字段）。
+            SettingCard persona=new SettingCard("性格",obj.optString("personality"),SettingCard.Category.SETTING);
+            if(!persona.value().isEmpty())add(list,text("     性格　"+persona.value(),12,false,secondary()),-1,30);
+            SettingCard goal=new SettingCard("目标",obj.optString("goal"),SettingCard.Category.SETTING);
+            if(!goal.value().isEmpty())add(list,text("     目标　"+goal.value(),12,false,secondary()),-1,30);
+            shown++;
         }
         if(shown==0)add(list,text("当前作品暂无人物资料",13,false,secondary()),-1,44);
         gap(list,18);add(list,text("其他资料",19,true,foreground()),-1,42);
+        // 伏笔闭环账：读取旧版 plots 的既有 status（未展开/已埋设/发展中/已回收），只读不新增字段。
+        JSONArray plots=library.optJSONArray("plots");
+        ArrayList<StoryLedger.HookState> hookStates=new ArrayList<>();
+        int plotTotal=0;
+        if(plots!=null)for(int i=0;i<plots.length();i++){
+            JSONObject plot=plots.optJSONObject(i);
+            if(plot==null||!workId.equals(plot.optString("projectId")))continue;
+            plotTotal++;
+            StoryLedger.HookState state=StoryLedger.parseLegacyHookStatus(plot.optString("status"));
+            if(state!=null)hookStates.add(state);
+        }
+        add(list,text(StoryLedger.hookSummaryLine(plotTotal,StoryLedger.countActive(hookStates)),13,false,secondary()),-1,32);
+        if(plotTotal>0){
+            int listed=0;
+            for(int i=0;i<plots.length()&&listed<5;i++){
+                JSONObject plot=plots.optJSONObject(i);
+                if(plot==null||!workId.equals(plot.optString("projectId")))continue;
+                String row=StoryLedger.hookRow(plot.optString("title"),plot.optString("status"));
+                if(row.isEmpty())continue;
+                add(list,text(row,12,false,secondary()),-1,30);listed++;
+            }
+            if(plotTotal>5)add(list,text("…… 其余 "+(plotTotal-5)+" 条",12,false,secondary()),-1,30);
+        }
+        // 其余三类账：无对应数据源，保持真实空态，不编造条目。
+        for(StoryLedger.Book book:StoryLedger.books()){
+            if(book==StoryLedger.Book.HOOK_CLOSURE)continue;
+            add(list,text(book.label()+" · 暂无",13,false,secondary()),-1,32);
+        }
         add(list,text("旧版的关系网、世界地图与 AI 工坊数据仍完整保存在 JSON 中，原生编辑界面尚未迁移这些功能。",13,false,secondary()),-1,-2);
         scroller.addView(list);add(mainHost,scroller,-1,-1);
     }
