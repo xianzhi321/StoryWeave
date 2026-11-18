@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <!-- EncryptedSharedPreferences keys cannot be restored without the device Keystore. -->
+    <exclude domain="sharedpref" path="storyweave_ai_keys.xml" />
+</full-backup-content>
